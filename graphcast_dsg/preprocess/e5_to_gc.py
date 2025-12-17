@@ -7,6 +7,11 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
+# Disable Google Cloud authentication
+os.environ["NO_GCE_CHECK"] = "true"
+os.environ["GOOGLE_CLOUD_PROJECT"] = ""
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
+
 def expand_time_dims(ds, steps):
     # Expand the time dimension of the dataset
     orig_time = ds.time.values
