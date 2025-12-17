@@ -120,7 +120,9 @@ def run_preprocess(
         ds_gs = xr.open_dataset(
         "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
         engine="zarr",
-        storage_options={"token": None}  # Public dataset, so no authentication needed
+        storage_options={"token": None,
+                         "anon": True,  # Explicitly use anonymous access
+                        }  # Public dataset, so no authentication needed
         )[vlist].sel(time=list(time_tuple), level=lvs).isel(latitude=slice(None, None, -1))
         
         # convert to graphcast format
