@@ -64,8 +64,8 @@ def generate_dates(start_date: str, end_date: str):
     except:
         raise ValueError(
             "Please provide dates in YYYY-MM-DD:HH (e.g. '2020-01-01:00')")
-    start_shift = start - pd.Timedelta(hours=12)
-    dates = pd.date_range(start=start_shift, end=end, freq="12h")
+    start_shift = start - pd.Timedelta(hours=6
+    dates = pd.date_range(start=start_shift, end=end, freq="6h")
     return dates
 
 def run_preprocess(
