@@ -7,6 +7,19 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
+def expand_time_dims(ds, steps):
+    # Expand the time dimension of the dataset
+    orig_time = ds.time.values
+    extra_steps = steps
+
+    ds_last = ds.isel(time=1)
+    new_times = pd.date_range(start=orig_time[-1], periods=extra_steps+1, freq="6h")[1:]
+
+    repeated = ds_last.expand_dims(time=range(extra_steps)).copy(deep=True)
+    repeated['time'] = new_times
+    ds_extended = xr.concat([ds, repeated], dim='time')
+    return ds_extended
+
 def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
     # modify the dataset to match GraphCast expected format
 
@@ -20,6 +33,9 @@ def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
     ds = ds.rename({
         "total_precipitation": "total_precipitation_6hr",
     })
+
+    # expand time dimension to 40 steps
+    ds = expand_time_dims(ds, steps=40)
 
     # add datetime coordinate
     ds = ds.assign_coords(datetime=ds["time"])
