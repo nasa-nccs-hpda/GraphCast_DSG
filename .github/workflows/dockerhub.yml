@@ -46,10 +46,10 @@ jobs:
       - name: Set build versions
         id: set_versions
         env:
-          DEP_REPO: nasa-nccs-hpda/GenCast_FP
+          DEP_REPO: nasa-nccs-hpda/GraphCast_DSG
         run: |
           DEP_TAG=$(curl -s https://api.github.com/repos/${DEP_REPO}/releases/latest | jq -r .tag_name)
-          echo "GenCastFP_TAG=$DEP_TAG" >> $GITHUB_ENV
+          echo "GrapCastDSG_TAG=$DEP_TAG" >> $GITHUB_ENV
           echo "VERSION_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           echo "Using ${DEP_REPO} release tag: $DEP_TAG"
           echo "Workflow release version: ${GITHUB_REF#refs/tags/}"
@@ -61,9 +61,9 @@ jobs:
           platforms: linux/amd64
           file: ./requirements/Dockerfile
           push: true
-          tags: nasanccs/gencast-fp:${{ env.GenCastFP_TAG }}-amd64
+          tags: nasanccs/graphcast-dsg:${{ env.GraphCastDSG_TAG }}-amd64
           build-args: |
-            GenCastFP_TAG=${{ env.GenCastFP_TAG }}
+            GraphCastDSG_TAG=${{ env.GraphCastDSG_TAG }}
 
   manifest:
     needs: [docker-amd]
@@ -78,28 +78,28 @@ jobs:
       - name: Set build versions
         id: set_versions
         env:
-          DEP_REPO: nasa-nccs-hpda/GenCast_FP
+          DEP_REPO: nasa-nccs-hpda/GraphCast_DSG
         run: |
           DEP_TAG=$(curl -s https://api.github.com/repos/${DEP_REPO}/releases/latest | jq -r .tag_name)
-          echo "GenCastFP_TAG=$DEP_TAG" >> $GITHUB_ENV
+          echo "GraphCastDSG_TAG=$DEP_TAG" >> $GITHUB_ENV
           echo "VERSION_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           echo "Using ${DEP_REPO} release tag: $DEP_TAG"
           echo "Workflow release version: ${GITHUB_REF#refs/tags/}"
 
       - name: Extract amd64 digest
         run: |
-          AMD_DIGEST=$(docker buildx imagetools inspect nasanccs/gencast-fp:${{ env.GenCastFP_TAG }}-amd64 \
+          AMD_DIGEST=$(docker buildx imagetools inspect nasanccs/graphcast-dsg:${{ env.GraphCastDSG_TAG }}-amd64 \
             --format '{{range .Manifest.Manifests}}{{if eq .Platform.Architecture "amd64"}}{{.Digest}}{{end}}{{end}}')
           echo "AMD_DIGEST=$AMD_DIGEST" >> $GITHUB_ENV
 
       - name: Create and push manifest
         run: |
           # latest -> amd64 only
-          docker manifest create nasanccs/gencast-fp:latest \
-            nasanccs/gencast-fp@${AMD_DIGEST}
-          docker manifest push nasanccs/gencast-fp:latest
+          docker manifest create nasanccs/graphcast-dsg:latest \
+            nasanccs/graphcast-dsg@${AMD_DIGEST}
+          docker manifest push nasanccs/graphcast-dsg:latest
 
           # version tag -> amd64 only
-          docker manifest create nasanccs/gencast-fp:${{ env.GenCastFP_TAG }} \
-            nasanccs/gencast-fp@${AMD_DIGEST}
-          docker manifest push nasanccs/gencast-fp:${{ env.GenCastFP_TAG }}
+          docker manifest create nasanccs/graphcast-dsg:${{ env.GraphCastDSG_TAG }} \
+            nasanccs/graphcast-dsg@${AMD_DIGEST}
+          docker manifest push nasanccs/graphcast-dsg:${{ env.GraphCastDSG_TAG }}

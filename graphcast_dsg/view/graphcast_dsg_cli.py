@@ -4,12 +4,12 @@ import time
 import logging
 import argparse
 
-from gencast_fp.preprocess.fp2e5 import run_preprocess
-from gencast_fp.prediction.predict_gencast import (
-    run_predict_multiday,
-    load_ckpt_files,
-)
-from gencast_fp.postprocess.gencast_cf import run_postprocess_multiday
+from graphcast_dsg.preprocess.e5_to_gc import run_preprocess
+# from gencast_fp.prediction.predict_gencast import (
+#     run_predict_multiday,
+#     load_ckpt_files,
+# )
+# from gencast_fp.postprocess.gencast_cf import run_postprocess_multiday
 
 
 # -----------------------------------------------------------------------------
@@ -37,25 +37,10 @@ def main():
         default="./output/preprocess",
         help="Output directory for preprocessed files")
     preprocess_args.add_argument(
-        "--expid", type=str, default="f5295",
-        help="Experiment ID for the output files")
-    preprocess_args.add_argument(
-        "--res_value",
-        type=float,
-        default=1.0,
-        help="Resoluton (default 1.0 resolution)",
-    )
-    preprocess_args.add_argument(
         "--nsteps",
         type=int,
-        default=30,
-        help="Number of steps for rollout (default 30, 15 days)",
-    )
-    preprocess_args.add_argument(
-        "--era5_sst",
-        type=bool,
-        default=False,
-        help="If True, use ERA5 SST instead of OSTIA-Reynolds",
+        default=40,
+        help="Number of steps for rollout (default 40, 10 days)",
     )
 
     # ---------- predict ----------

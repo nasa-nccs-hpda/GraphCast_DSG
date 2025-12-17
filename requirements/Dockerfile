@@ -34,7 +34,7 @@ ENV MAMBA_ROOT_PREFIX=/opt/micromamba
 
 # Create env with things pip struggles with + compilers
 RUN /usr/local/bin/micromamba create -y -n esmf -c conda-forge \
-      python=3.10 esmpy xesmf libnetcdf openmpi mpi4py \
+      python=3.10 esmpy xesmf libnetcdf openmpi mpi4py optax \
       fortran-compiler c-compiler && \
     /usr/local/bin/micromamba clean -a -y
 
@@ -56,22 +56,22 @@ RUN python -m pip install --no-cache-dir --upgrade huggingface_hub hf_transfer
 ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 # --- Clone your repo and compile the Fortran extension ---
-ARG REPO_URL="https://github.com/nasa-nccs-hpda/GenCast_FP.git"
-ARG GenCastFP_TAG="main"
-WORKDIR /opt/GenCast_FP
-RUN git clone --depth 1 --branch ${GenCastFP_TAG} ${REPO_URL} /opt/GenCast_FP
+ARG REPO_URL="https://github.com/nasa-nccs-hpda/GraphCast_DSG.git"
+ARG GraphCastDSG_TAG="main"
+WORKDIR /opt/GraphCast_DSG
+RUN git clone --depth 1 --branch ${GraphCastDSG_TAG} ${REPO_URL} /opt/GraphCast_DSG
 
-WORKDIR /opt/GenCast_FP/gencast_fp/preprocess
-RUN python -c "import numpy as _; print('NumPy:', _.__version__)" && \
-    python -m numpy.f2py -c -m eta2xprs_ eta2xprs.F90 only: eta2xprs
+# WORKDIR /opt/GenCast_FP/gencast_fp/preprocess
+# RUN python -c "import numpy as _; print('NumPy:', _.__version__)" && \
+#     python -m numpy.f2py -c -m eta2xprs_ eta2xprs.F90 only: eta2xprs
 
-# Sanity check the extension
-ENV PYTHONPATH=/opt/GenCast_FP
-RUN python - <<'PY'
-import importlib
-m = importlib.import_module("gencast_fp.preprocess.eta2xprs_")
-print("Built extension OK:", m.__name__)
-PY
+# # Sanity check the extension
+# ENV PYTHONPATH=/opt/GraphCast_DSG
+# RUN python - <<'PY'
+# import importlib
+# m = importlib.import_module("gencast_fp.preprocess.eta2xprs_")
+# print("Built extension OK:", m.__name__)
+# PY
 
 # --- Pull only the `gencast/` folder from qefm-core ---
 ARG HF_QEFM_REPO="nasa-cisto-data-science-group/qefm-core"
@@ -100,18 +100,18 @@ snapshot_download(
     local_dir=out_dir,
     local_dir_use_symlinks=False,
     token=token,
-    allow_patterns=["gencast/**"],  # only the subdir we need
+    allow_patterns=["graphcast/**"],  # only the subdir we need
     ignore_patterns=["*.md", "*.ipynb", ".gitattributes", ".gitignore"]
 )
 PY
 
 # Make the path discoverable to your app
-ENV GENECAST_FP_QEFM_GENCast_DIR=${QEFM_CORE_DIR}/gencast
+ENV GRAPHCAST_DSG_QEFM_GRAPHCast_DIR=${QEFM_CORE_DIR}/graphcast
 
 # Make a short command "gencast-fp"
-RUN printf '#!/usr/bin/env bash\nexec python /opt/GenCast_FP/gencast_fp/view/gencast_fp_cli.py "$@"\n' \
-    > /usr/local/bin/gencast-fp && \
-    chmod +x /usr/local/bin/gencast-fp
+RUN printf '#!/usr/bin/env bash\nexec python /opt/GraphCast_DSG/graphcast_dsg/view/graphcast_dsg_cli.py "$@"\n' \
+    > /usr/local/bin/graphcast-dsg && \
+    chmod +x /usr/local/bin/graphcast-dsg
 
 HEALTHCHECK NONE
 ENTRYPOINT [""]
