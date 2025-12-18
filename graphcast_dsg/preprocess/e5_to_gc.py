@@ -112,7 +112,7 @@ def run_preprocess(
     storage_options={"token": None,
                         "anon": True,  # Explicitly use anonymous access
                     }  # Public dataset, so no authentication needed
-    )[vlist].sel(levls=lvs)
+    )[vlist].sel(level=lvs)
 
     for time_tuple in pairs:
 
