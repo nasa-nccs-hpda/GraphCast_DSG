@@ -125,7 +125,7 @@ def run_predict(
     ckpt_path: str = None,
     res_value: float = 0.25,
     nsteps: int = 40,                # 10-day rollout (6hr steps)
-    container_meta: str = "./opt/qefm-core/graphcast",
+    container_meta: str = "/discover/nobackup/jli30/development/GraphCast_DSG/qefm-core/graphcast",
     ckpt_and_stats: dict = None,
 ) -> str:
     """
