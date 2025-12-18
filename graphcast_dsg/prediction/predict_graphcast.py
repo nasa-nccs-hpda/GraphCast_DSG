@@ -121,7 +121,8 @@ def _construct_wrapped_graphcast(
 def run_predict(
     date: str,
     input_dir: str,
-    out_dir: str,
+    out_dir: str,   
+    ckpt_path: str = None,
     res_value: float = 0.25,
     nsteps: int = 40,                # 10-day rollout (6hr steps)
     container_meta: str = "./opt/qefm-core/graphcast",
@@ -144,6 +145,10 @@ def run_predict(
     if os.path.exists(out_file):
         logging.info(f'Skipping {out_file}, prediction already exists.')
         return out_file
+
+    # Load checkpoint and stats
+    if ckpt_and_stats is None:
+        ckpt_and_stats = load_ckpt_files(container_meta, ckpt_path)
 
     # Extract model info and task info from checkpoint
     ckpt = ckpt_and_stats["ckpt"]
