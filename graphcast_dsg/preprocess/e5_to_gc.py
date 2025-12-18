@@ -25,7 +25,7 @@ def expand_time_dims(ds, steps):
     ds_extended = xr.concat([ds, repeated], dim='time')
     return ds_extended
 
-def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
+def to_graphcast_inpout(ds: xr.Dataset, steps: int) -> xr.Dataset:
     # modify the dataset to match GraphCast expected format
 
     # change dimension names
@@ -39,8 +39,8 @@ def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
         "total_precipitation": "total_precipitation_6hr",
     })
 
-    # expand time dimension to 40 steps
-    ds = expand_time_dims(ds, steps=40)
+    # expand time dimension
+    ds = expand_time_dims(ds, steps=steps)
 
     # add datetime coordinate
     ds = ds.assign_coords(datetime=ds["time"])
@@ -99,7 +99,7 @@ def run_preprocess(
             nsteps: int = 40,  # 10 day rollout
         ):
     res_value = 0.25  # fixed for ERA5 0.25 deg
-    
+
     os.makedirs(outdir, exist_ok=True)
 
     dates = generate_dates(start_date, end_date)
@@ -133,7 +133,7 @@ def run_preprocess(
         ds_c = ds_gs.sel(time=list(time_tuple)).isel(latitude=slice(None, None, -1))
         
         # convert to graphcast format
-        ds_out = to_graphcast_inpout(ds_c)
+        ds_out = to_graphcast_inpout(ds_c, steps=nsteps)
 
         # save to netcdf
         ds_out.to_netcdf(
