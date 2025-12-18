@@ -239,7 +239,7 @@ def run_predict(
 
     logging.info("Starting autoregressive rollout...")
 
-    predictions=rollout.chunked_prediction_generator_multiple_runs(
+    predictions=rollout.chunked_prediction(
         predictor_fn=run_forward_jitted,
         rngs=rng,
         inputs=eval_inputs,
