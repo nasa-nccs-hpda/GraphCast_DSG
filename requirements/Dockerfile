@@ -93,7 +93,7 @@ revision = os.environ.get("HF_QEFM_REV", "main")
 token    = os.environ.get("HUGGINGFACE_HUB_TOKEN") or None
 out_dir  = os.environ["QEFM_CORE_DIR"]
 
-print(f"[hf] Downloading {repo_id}@{revision} (only gencast/**) -> {out_dir}")
+print(f"[hf] Downloading {repo_id}@{revision} (only graphcast/**) -> {out_dir}")
 snapshot_download(
     repo_id=repo_id,
     revision=revision,

@@ -5,10 +5,10 @@ import logging
 import argparse
 
 from graphcast_dsg.preprocess.e5_to_gc import run_preprocess
-# from gencast_fp.prediction.predict_gencast import (
-#     run_predict_multiday,
-#     load_ckpt_files,
-# )
+from graphcast_dsg.prediction.predict_graphcast import (
+    run_predict_multiday,
+    load_ckpt_files,
+)
 # from gencast_fp.postprocess.gencast_cf import run_postprocess_multiday
 
 
@@ -61,11 +61,10 @@ def main():
     predict_args.add_argument(
         "--ckpt", type=str, default=None,
         help="Path to GenCast .npz checkpoint (overrides container default)")
-    predict_args.add_argument("--nsteps", type=int, default=30)
-    predict_args.add_argument("--res_value", type=float, default=1.0)
-    predict_args.add_argument("--ensemble", type=int, default=8)
+    predict_args.add_argument("--nsteps", type=int, default=40)
+    predict_args.add_argument("--res_value", type=float, default=0.25)
     predict_args.add_argument(
-        "--container_meta", type=str, default="/opt/qefm-core/gencast",
+        "--container_meta", type=str, default="/opt/qefm-core/graphcast",
         help="Where to load default ckpt/configs if --ckpt not passed")
 
     # ---------- postprocess ----------
@@ -102,25 +101,12 @@ def main():
     run_args.add_argument(
         "--output_dir", type=str, default="./output/preprocess",
         help="Directory for preprocess outputs (becomes predict input)")
-    run_args.add_argument(
-        "--expid", type=str, default="f5295",
-        help="Experiment ID used during preprocessing")
-    run_args.add_argument(
-        "--era5_sst",
-        type=bool,
-        default=False,
-        help="If True, use ERA5 SST instead of OSTIA-Reynolds",
-    )
 
     run_args.add_argument(
         "--ckpt", type=str, default=None,
         help="Path to GenCast .npz checkpoint (overrides container default)")
-    run_args.add_argument("--nsteps", type=int, default=30)
-    run_args.add_argument("--res_value", type=float, default=1.0)
-    run_args.add_argument("--ensemble", type=int, default=8)
-    run_args.add_argument(
-        "--ens_mean", type=bool, default=True,
-        help="Disable ensemble mean (keep all ensemble members)")
+    run_args.add_argument("--nsteps", type=int, default=40)
+    run_args.add_argument("--res_value", type=float, default=0.25)
 
     run_args.add_argument(
         "--skip_preprocess", action="store_true",
@@ -132,7 +118,7 @@ def main():
         "--skip_post", action="store_true",
         help="Skip postprocess")
     run_args.add_argument(
-        "--container_meta", type=str, default="/opt/qefm-core/gencast",
+        "--container_meta", type=str, default="/opt/qefm-core/graphcast",
         help="Where to load default ckpt/configs if --ckpt not passed")
 
     args = parser.parse_args()
@@ -150,10 +136,8 @@ def main():
             args.start_date,
             args.end_date,
             args.output_dir,
-            args.expid,
             args.res_value,
             args.nsteps,
-            args.era5_sst
         )
 
     elif args.cmd == "predict":
@@ -163,7 +147,7 @@ def main():
         if args.ckpt:
             ckpt_and_stats = {"ckpt": args.ckpt}
         else:
-            ckpt_and_stats = load_ckpt_files("/opt/qefm-core/gencast")
+            ckpt_and_stats = load_ckpt_files("/opt/qefm-core/graphcast")
 
         out_path = run_predict_multiday(
             start_date=args.start_date,
@@ -172,7 +156,6 @@ def main():
             out_dir=args.output_dir,
             res_value=args.res_value,
             nsteps=args.nsteps,
-            ensemble_members=args.ensemble,
             container_meta=args.container_meta,
             ckpt_and_stats=ckpt_and_stats,
         )
@@ -212,10 +195,8 @@ def main():
                 args.start_date,
                 args.end_date,
                 preprocess_output_dir,
-                args.expid,
                 args.res_value,
                 args.nsteps,
-                args.era5_sst
             )
         else:
             logging.info("[1/3] Skipping preprocess")
@@ -235,7 +216,6 @@ def main():
                 out_dir=prediction_output_dir,
                 res_value=args.res_value,
                 nsteps=args.nsteps,
-                ensemble_members=args.ensemble,
                 container_meta=args.container_meta,
                 ckpt_and_stats=ckpt_and_stats,
             )
