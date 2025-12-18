@@ -96,10 +96,10 @@ def run_preprocess(
             start_date: str,
             end_date: str,
             outdir: str,
-            res_value: float = 0.25,  # 0.25 resolution
             nsteps: int = 40,  # 10 day rollout
         ):
-
+    res_value = 0.25  # fixed for ERA5 0.25 deg
+    
     os.makedirs(outdir, exist_ok=True)
 
     dates = generate_dates(start_date, end_date)
