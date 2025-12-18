@@ -46,7 +46,7 @@ def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
     ds = ds.assign_coords(datetime=ds["time"])
 
     # add the dimensions "batch"
-    for var in ds.data_vars:
+    for var in ds.data_vars+['datetime']:
             ds[var] = ds[var].expand_dims("batch")
     
     # drop the time dimension for land_sea_mask and geopotential_at_surface
@@ -105,6 +105,15 @@ def run_preprocess(
     dates = generate_dates(start_date, end_date)
     pairs = [(dates[i], dates[i+1]) for i in range(len(dates)-1)]
 
+    vlist, lvs = get_vars_list_and_levels()
+    ds_gs = xr.open_dataset(
+    "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
+    engine="zarr",
+    storage_options={"token": None,
+                        "anon": True,  # Explicitly use anonymous access
+                    }  # Public dataset, so no authentication needed
+    )[vlist].sel(levls=lvs)
+
     for time_tuple in pairs:
 
         # create output filename
@@ -121,23 +130,15 @@ def run_preprocess(
             continue
         
         # extract data for the day
-        vlist, lvs = get_vars_list_and_levels()
-        ds_gs = xr.open_dataset(
-        "gs://gcp-public-data-arco-era5/ar/full_37-1h-0p25deg-chunk-1.zarr-v3",
-        engine="zarr",
-        storage_options={"token": None,
-                         "anon": True,  # Explicitly use anonymous access
-                        }  # Public dataset, so no authentication needed
-        )[vlist].sel(time=list(time_tuple), level=lvs).isel(latitude=slice(None, None, -1))
+        ds_c = ds_gs.sel(time=list(time_tuple)).isel(latitude=slice(None, None, -1))
         
         # convert to graphcast format
-        ds_out = to_graphcast_inpout(ds_gs)
+        ds_out = to_graphcast_inpout(ds_c)
 
         # save to netcdf
         ds_out.to_netcdf(
             out_file, mode="w", format="NETCDF4", engine="netcdf4"
         )
-
     return
 
 
@@ -172,7 +173,6 @@ def main():
         help="Number of steps for rollout (default 40, 10 days)",
     )
 
-
     args = parser.parse_args()
 
     # Run preprocessing function
@@ -184,7 +184,6 @@ def main():
     )
 
     return
-
 
 if __name__ == "__main__":
     main()
