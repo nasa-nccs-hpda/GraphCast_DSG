@@ -74,11 +74,11 @@ def load_ckpt_files(container_meta, ckpt_path: str = None):
             container_meta, "params_GraphCast_operational.npz"
         )
     diffs_file = os.path.join(
-        container_meta, "stats-diffs_stddev_by_level.nc"
+        container_meta, "stats_diffs_stddev_by_level.nc"
     )
-    mean_file = os.path.join(container_meta, "stats-mean_by_level.nc")
+    mean_file = os.path.join(container_meta, "stats_mean_by_level.nc")
     stddev_file = os.path.join(
-        container_meta, "stats-stddev_by_level.nc"
+        container_meta, "stats_stddev_by_level.nc"
     )
 
     with open(ckpt_path, "rb") as f:
