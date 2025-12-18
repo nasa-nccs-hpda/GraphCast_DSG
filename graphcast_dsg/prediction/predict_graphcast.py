@@ -208,7 +208,7 @@ def run_predict(
     
     @hk.transform_with_state
     def run_forward(model_config, task_config, inputs, targets_template, forcings):
-        predictor = _construct_wrapped_graphcast(model_config, task_config)
+        predictor = _forward_wrapped()
         return predictor(inputs, targets_template=targets_template, forcings=forcings)
 
     @hk.transform_with_state
