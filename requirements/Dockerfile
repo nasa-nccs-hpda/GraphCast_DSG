@@ -34,7 +34,7 @@ ENV MAMBA_ROOT_PREFIX=/opt/micromamba
 
 # Create env with things pip struggles with + compilers
 RUN /usr/local/bin/micromamba create -y -n esmf -c conda-forge \
-      python=3.10 esmpy xesmf libnetcdf openmpi mpi4py optax \
+      python=3.10 esmpy xesmf libnetcdf openmpi mpi4py optax gcsfs \
       fortran-compiler c-compiler && \
     /usr/local/bin/micromamba clean -a -y
 
