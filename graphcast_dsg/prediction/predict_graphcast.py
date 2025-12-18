@@ -59,7 +59,7 @@ def prepare_out_dir(out_dir, date, res_value, nsteps):
     date_str = date.strftime("%Y-%m-%dT%H")
 
     out_file_value = (
-        f"gencast-dataset-prediction-geos_date-{date_str}"
+        f"graphcast-dataset-prediction-era5_date-{date_str}"
         f"_res-{res_value}_levels-13_steps-{nsteps}.nc"
     )
     out_file = os.path.join(out_dir, out_file_value)
@@ -207,7 +207,7 @@ def run_predict(
         return lambda **kw: fn(**kw)[0]
     
     @hk.transform_with_state
-    def run_forward(model_config, task_config, inputs, targets_template, forcings):
+    def run_forward(inputs, targets_template, forcings):
         predictor = _forward_wrapped()
         return predictor(inputs, targets_template=targets_template, forcings=forcings)
 
@@ -256,9 +256,8 @@ def run_predict_multiday(
     end_date: str,
     input_dir: str,
     out_dir: str,
-    res_value: float = 1.0,
-    nsteps: int = 30,  # 15-day rollout (12h steps)
-    ensemble_members: int = 8,
+    res_value: float = 0.25,
+    nsteps: int = 40,  # 15-day rollout (12h steps)
     container_meta: str = "/opt/qefm-core/gencast",
     ckpt_and_stats: dict = None,
 ):
@@ -277,7 +276,7 @@ def run_predict_multiday(
     end_ts = pd.to_datetime(end_date,   format=fmt)
 
     # Generate a date range in 12-hour increments
-    date_range = pd.date_range(start=start_ts, end=end_ts, freq="12h")
+    date_range = pd.date_range(start=start_ts, end=end_ts, freq="6h")
 
     for current_date in date_range:
 
@@ -289,7 +288,6 @@ def run_predict_multiday(
             out_dir,
             res_value,
             nsteps,
-            ensemble_members,
             container_meta,
             ckpt_and_stats,
         )
