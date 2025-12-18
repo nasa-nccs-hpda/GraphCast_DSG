@@ -50,8 +50,8 @@ def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
             ds[var] = ds[var].expand_dims("batch")
     
     # drop the time dimension for land_sea_mask and geopotential_at_surface
-    ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars(["time", "batch"])
-    ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time", "batch"])
+    ds['land_sea_mask'] = ds['land_sea_mask'].isel(time=0).drop_vars(["time"]).squeeze()
+    ds['geopotential_at_surface'] = ds['geopotential_at_surface'].isel(time=0).drop_vars(["time"]).squeeze()  
     return ds
 
 def get_vars_list_and_levels():
