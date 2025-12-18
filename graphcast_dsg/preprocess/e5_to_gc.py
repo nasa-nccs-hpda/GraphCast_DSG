@@ -46,7 +46,7 @@ def to_graphcast_inpout(ds: xr.Dataset) -> xr.Dataset:
     ds = ds.assign_coords(datetime=ds["time"])
 
     # add the dimensions "batch"
-    for var in ds.data_vars+['datetime']:
+    for var in list(ds.data_vars)+['datetime']:
             ds[var] = ds[var].expand_dims("batch")
     
     # drop the time dimension for land_sea_mask and geopotential_at_surface
