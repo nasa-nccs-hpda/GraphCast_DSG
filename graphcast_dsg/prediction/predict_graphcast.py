@@ -241,7 +241,7 @@ def run_predict(
 
     predictions=rollout.chunked_prediction(
         predictor_fn=run_forward_jitted,
-        rngs=rng,
+        rng=rng,
         inputs=eval_inputs,
         targets_template=eval_targets * np.nan,
         forcings=eval_forcings,
