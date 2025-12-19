@@ -36,6 +36,11 @@ def main():
         default="./output/preprocess",
         help="Output directory for preprocessed files")
     preprocess_args.add_argument(
+        "--res_value",
+        type=float,
+        default=0.25,
+        help="Spatial resolution value (default 0.25 deg)")
+    preprocess_args.add_argument(
         "--nsteps",
         type=int,
         default=40,

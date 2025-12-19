@@ -96,6 +96,7 @@ def run_preprocess(
             start_date: str,
             end_date: str,
             outdir: str,
+            res_value: float = 0.25,
             nsteps: int = 40,  # 10 day rollout
         ):
     res_value = 0.25  # fixed for ERA5 0.25 deg
@@ -167,6 +168,12 @@ def main():
     )
 
     parser.add_argument(
+        "--res_value",
+        type=float,
+        default=0.25,
+        help="Spatial resolution value (default 0.25 deg)",
+    )
+    parser.add_argument(
         "--nsteps",
         type=int,
         default=40,
@@ -180,6 +187,7 @@ def main():
         args.start_date,
         args.end_date,
         args.outdir,
+        args.res_value,
         args.nsteps,
     )
 
