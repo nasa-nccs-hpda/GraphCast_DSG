@@ -60,7 +60,7 @@ ARG REPO_URL="https://github.com/nasa-nccs-hpda/GraphCast_DSG.git"
 ARG GraphCastDSG_TAG="main"
 WORKDIR /opt/GraphCast_DSG
 RUN git clone --depth 1 --branch ${GraphCastDSG_TAG} ${REPO_URL} /opt/GraphCast_DSG
-ENV PYTHONPATH=/opt/GraphCast_DSG
+ENV PYTHONPATH="/opt/GraphCast_DSG:${PYTHONPATH}"
 
 # WORKDIR /opt/GenCast_FP/gencast_fp/preprocess
 # RUN python -c "import numpy as _; print('NumPy:', _.__version__)" && \

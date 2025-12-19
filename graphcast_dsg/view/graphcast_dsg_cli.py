@@ -11,7 +11,6 @@ from graphcast_dsg.prediction.predict_graphcast import (
 )
 from graphcast_dsg.postprocess.graphcast_cf import run_postprocess_multiday
 
-
 # -----------------------------------------------------------------------------
 # main
 # -----------------------------------------------------------------------------
