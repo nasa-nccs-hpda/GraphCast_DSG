@@ -110,12 +110,6 @@ def proc_time_step(
         ds = ds.sel(lev=slice(None, None, -1))
     ds.lev.attrs = {"long_name": "pressure_level", "units": "hPa"}
 
-    if "sample" in ds.dims:
-        ds = ds.rename({"sample": "ens"})
-        ds.ens.attrs = {"long_name": "ensemble_member", "units": " "}
-        if ens_mean:
-            ds = ds.mean(dim="ens")
-
     # --- variable renames + attrs (only if present) ---
     rename_dict = {
         "10m_u_component_of_wind": "U10M",
@@ -126,7 +120,7 @@ def proc_time_step(
         "sea_surface_temperature": "SST",
         "specific_humidity": "QV",
         "temperature": "T",
-        "total_precipitation_12hr": "PRECTOT",
+        "total_precipitation_6hr": "PRECTOT",
         "u_component_of_wind": "U",
         "v_component_of_wind": "V",
         "vertical_velocity": "OMEGA",
@@ -169,7 +163,7 @@ def proc_time_step(
     # --- globals ---
     ds.attrs = {
         # TODO: FIX THIS TIME with +12?
-        "title": f"FMGenCast forecast start at {YYYY}-{MM}-{DD}T{HH}:00:00",
+        "title": f"FMGraphCast forecast start at {YYYY}-{MM}-{DD}T{HH}:00:00",
         "institution": "NASA CISTO Data Science Group",
         "source": "FMGenCast model output",
         "Conventions": "CF",
@@ -228,7 +222,7 @@ def run_postprocess_day(
 
     # Initial conditions (first two steps)
     init_files = sorted(
-        geos_dir.glob(f"*source-geos*{Y:04d}-{M:02d}-{D:02d}T{H:02d}_*.nc"))
+        geos_dir.glob(f"*source-era5*{Y:04d}-{M:02d}-{D:02d}T{H:02d}_*.nc"))
 
     if init_files:
         # ds_init = xr.open_dataset(
@@ -249,7 +243,7 @@ def run_postprocess_day(
 
     # Predictions (all steps)
     pred_files = sorted(
-        pred_dir.glob(f"*geos_date-{Y:04d}-{M:02d}-{D:02d}T{H:02d}_*.nc"))
+        pred_dir.glob(f"*era5_date-{Y:04d}-{M:02d}-{D:02d}T{H:02d}_*.nc"))
     if pred_files:
         # ds_pred = xr.open_dataset(
         # pred_files[0]).drop_vars("land_sea_mask", errors="ignore")
@@ -281,7 +275,7 @@ def run_postprocess_multiday(
 ):
     """
     Postprocess multiple days (inclusive) of
-    GenCast outputs into CF-compliant NetCDFs.
+    GraphCast outputs into CF-compliant NetCDFs.
     Calls run_postprocess_day for each day in [start_date, end_date].
     """
     # start_date = np.datetime64(start_date)
@@ -296,7 +290,7 @@ def run_postprocess_multiday(
     end_ts = pd.to_datetime(end_date,   format=fmt)
 
     # Generate a date range in 12-hour increments
-    date_range = pd.date_range(start=start_ts, end=end_ts, freq="12h")
+    date_range = pd.date_range(start=start_ts, end=end_ts, freq="6h")
 
     for current_date in date_range:
 

@@ -9,7 +9,7 @@ from graphcast_dsg.prediction.predict_graphcast import (
     run_predict_multiday,
     load_ckpt_files,
 )
-# from gencast_fp.postprocess.gencast_cf import run_postprocess_multiday
+from gencast_fp.postprocess.graphcast_cf import run_postprocess_multiday
 
 
 # -----------------------------------------------------------------------------
