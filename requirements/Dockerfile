@@ -60,13 +60,13 @@ ARG REPO_URL="https://github.com/nasa-nccs-hpda/GraphCast_DSG.git"
 ARG GraphCastDSG_TAG="main"
 WORKDIR /opt/GraphCast_DSG
 RUN git clone --depth 1 --branch ${GraphCastDSG_TAG} ${REPO_URL} /opt/GraphCast_DSG
+ENV PYTHONPATH=/opt/GraphCast_DSG
 
 # WORKDIR /opt/GenCast_FP/gencast_fp/preprocess
 # RUN python -c "import numpy as _; print('NumPy:', _.__version__)" && \
 #     python -m numpy.f2py -c -m eta2xprs_ eta2xprs.F90 only: eta2xprs
 
 # # Sanity check the extension
-# ENV PYTHONPATH=/opt/GraphCast_DSG
 # RUN python - <<'PY'
 # import importlib
 # m = importlib.import_module("gencast_fp.preprocess.eta2xprs_")
