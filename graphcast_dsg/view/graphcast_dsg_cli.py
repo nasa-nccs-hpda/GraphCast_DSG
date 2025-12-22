@@ -133,13 +133,17 @@ def main():
         args.end_date = args.start_date
 
     if args.cmd == "preprocess":
+        # Setting up directories
+        preprocess_output_dir = os.path.join(
+            args.output_dir, '1-preprocessed')
+        os.makedirs(preprocess_output_dir, exist_ok=True)
 
-        logging.info("Starting preprocessing")
+        logging.info(f"[1/3] Preprocess → {preprocess_output_dir}")
 
         run_preprocess(
             args.start_date,
             args.end_date,
-            args.output_dir,
+            preprocess_output_dir,
             args.res_value,
             args.nsteps,
         )
@@ -187,23 +191,10 @@ def main():
             args.output_dir, '3-postprocessed')
 
         for edir in [
-                    preprocess_output_dir, prediction_output_dir,
+                    prediction_output_dir,
                     postprocess_output_dir
                 ]:
             os.makedirs(edir, exist_ok=True)
-
-        # 1) Preprocess
-        if not args.skip_preprocess:
-            logging.info(f"[1/3] Preprocess → {preprocess_output_dir}")
-            run_preprocess(
-                args.start_date,
-                args.end_date,
-                preprocess_output_dir,
-                args.res_value,
-                args.nsteps,
-            )
-        else:
-            logging.info("[1/3] Skipping preprocess")
 
         # 2) Predict
         if not args.skip_predict:

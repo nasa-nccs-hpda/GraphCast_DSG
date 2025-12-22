@@ -103,7 +103,6 @@ snapshot_download(
     allow_patterns=["graphcast/**"],  # only the subdir we need
     ignore_patterns=["*.md", "*.ipynb", ".gitattributes", ".gitignore"]
 )
-PY
 
 # Make the path discoverable to your app
 ENV GRAPHCAST_DSG_QEFM_GRAPHCast_DIR=${QEFM_CORE_DIR}/graphcast
