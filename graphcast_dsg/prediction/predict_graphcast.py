@@ -257,7 +257,7 @@ def run_predict_multiday(
     input_dir: str,
     out_dir: str,
     res_value: float = 0.25,
-    nsteps: int = 40,  # 15-day rollout (12h steps)
+    nsteps: int = 40,  # 10-day rollout (6h steps)
     container_meta: str = "/opt/qefm-core/gencast",
     ckpt_and_stats: dict = None,
 ):
