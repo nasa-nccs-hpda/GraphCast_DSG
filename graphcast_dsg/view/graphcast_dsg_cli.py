@@ -19,7 +19,7 @@ def main():
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    parser = argparse.ArgumentParser(description="GenCast-FP Processing")
+    parser = argparse.ArgumentParser(description="GraphCast Processing")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     # ---------- preprocess ----------
@@ -33,7 +33,7 @@ def main():
         help="End date to process (YYYY-MM-DD:HH)")
     preprocess_args.add_argument(
         "--output_dir", type=str,
-        default="./output/preprocess",
+        default="./output/1-preprocess",
         help="Output directory for preprocessed files")
     preprocess_args.add_argument(
         "--res_value",
@@ -59,8 +59,8 @@ def main():
         "--input_dir", "-i", required=True, type=str,
         help="Preprocessed input directory")
     predict_args.add_argument(
-        "--output_dir", "-o",
-        required=True, type=str,
+        "--output_dir", "-o", type=str,
+         efault="./output/2-predictions",
         help="Where to write predictions")
     predict_args.add_argument(
         "--ckpt", type=str, default=None,
@@ -86,7 +86,7 @@ def main():
         "--predictions_dir",   type=str, required=True,
         help="Directory with GenCast predictions")
     post_args.add_argument(
-        "--output_dir", type=str, default="./output/postprocess",
+        "--output_dir", type=str, default="./output/3-postprocess",
         help="Directory for CF-compliant NetCDF outputs")
     post_args.add_argument(
         "--ens_mean", type=bool, default=True,
