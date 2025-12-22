@@ -60,7 +60,7 @@ def main():
         help="Preprocessed input directory")
     predict_args.add_argument(
         "--output_dir", "-o", type=str,
-         efault="./output/2-predictions",
+        default="./output/2-predictions",
         help="Where to write predictions")
     predict_args.add_argument(
         "--ckpt", type=str, default=None,
