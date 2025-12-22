@@ -286,10 +286,10 @@ def run_predict_multiday(
             current_date,
             input_dir,
             out_dir,
-            res_value,
-            nsteps,
-            container_meta,
-            ckpt_and_stats,
+            res_value = res_value,
+            nsteps = nsteps,
+            container_meta = container_meta,
+            ckpt_and_stats = ckpt_and_stats,
         )
         logging.info(f"Prediction saved to file: {out_fn}")
         logging.info("======================================================")
