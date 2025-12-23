@@ -220,7 +220,7 @@ def run_predict(
             lambda x: xarray_jax.unwrap_data(x.mean(), require_jax=True),
             (loss, diagnostics),
         )
-    init_jitted = jax.jit(with_configs(run_forward.init))
+    init_jitted = jax.jit(run_forward.init)
     
     if params is None:
         init_jitted = jax.jit(loss_fn.init)
@@ -231,8 +231,7 @@ def run_predict(
             forcings=train_forcings,
         )
 
-    run_forward_jitted = drop_state(with_params(jax.jit(with_configs(
-    run_forward.apply))))
+    run_forward_jitted = drop_state(with_params(jax.jit(run_forward.apply)))
 
     # Rollout
     rng = jax.random.PRNGKey(0)
