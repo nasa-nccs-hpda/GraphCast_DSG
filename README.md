@@ -23,7 +23,7 @@ For a single day (end_date defaults to the same day):
 
 Step-1: preprocessing
 ```bash
-sbatch --partition=datamove --mem=200G -t 1:00:00 -J preprocess-gc --wrap="module load singularity; singularity exec -B $NOBACKUP,/css,/gpfsm/dmd/css,/nfs3m,/gpfsm /discover/nobackup/projects/QEFM/containers/graphcast-dsg-containers/graphcast-dsg-latest graphcast-dsg preprocess --start_date 2025-12-19:12 --output_dir /discover/nobackup/jacarabajli30/development/GraphCast_DSG/tests/graphcast-run"
+sbatch --partition=datamove --mem=200G -t 1:00:00 -J preprocess-gc --wrap="module load singularity; singularity exec -B $NOBACKUP,/css,/gpfsm/dmd/css,/nfs3m,/gpfsm /discover/nobackup/projects/QEFM/containers/graphcast-dsg-containers/graphcast-dsg-latest graphcast-dsg preprocess --start_date 2025-12-19:12 --output_dir /discover/nobackup/jli30/development/GraphCast_DSG/tests/graphcast-run"
 ```
 
 Step-2: prediction & postprocessing
