@@ -158,8 +158,9 @@ def run_predict(
     model_config = ckpt.model_config
 
     # Load example batch to create train/eval data properly
-    with open(input_file, "rb") as f:
-        example_batch = xarray.load_dataset(f).compute()
+    example_batch = xarray_load_ds(input_file)
+    # with open(input_file, "rb") as f:
+    #     example_batch = xarray.load_dataset(f).compute()
     assert example_batch.dims["time"] >= 3     
 
     # Extract train/eval tensors
