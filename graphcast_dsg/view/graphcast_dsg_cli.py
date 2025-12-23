@@ -229,7 +229,6 @@ def main():
                 geos_dir=preprocess_output_dir,
                 pred_dir=prediction_output_dir,
                 post_out_dir=postprocess_output_dir,
-                ens_mean=args.ens_mean,
             )
 
         else:
