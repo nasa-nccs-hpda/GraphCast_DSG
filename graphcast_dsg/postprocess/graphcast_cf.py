@@ -177,7 +177,7 @@ def proc_time_step(
     if case == "init":
         fname = f"FMGenCast-initial-geos_date-{tstamp}_res-1.0_levels-13.nc"
     else:
-        suffix = "_ens-mean.nc" if ens_mean else ".nc"
+        suffix = ".nc"
         fname = \
             "FMGenCast-prediction-geos_date-" + \
             f"{tstamp}_res-1.0_levels-13{suffix}"
