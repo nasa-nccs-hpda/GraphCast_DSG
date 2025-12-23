@@ -59,7 +59,7 @@ def _resolve_dt(ctime, ref_date):
 
 def proc_time_step(
             ds_org, ctime, ref_date,
-            output_dir: Path, case="init", ens_mean=True
+            output_dir: Path, case="init",
         ):
     
     GRAV = 9.80665
@@ -91,7 +91,7 @@ def proc_time_step(
         "time_increment": time_increment,
     }
 
-    # --- lat, lon, lev, ensemble ---
+    # --- lat, lon, lev ---
     lats = ds["lat"].values
     if lats[0] > lats[-1]:
         ds = ds.sel(lat=slice(None, None, -1))
@@ -165,7 +165,7 @@ def proc_time_step(
         # TODO: FIX THIS TIME with +12?
         "title": f"FMGraphCast forecast start at {YYYY}-{MM}-{DD}T{HH}:00:00",
         "institution": "NASA CISTO Data Science Group",
-        "source": "FMGenCast model output",
+        "source": "FMGraphCast model output",
         "Conventions": "CF",
         "Comment": "NetCDF-4",
     }
@@ -175,12 +175,12 @@ def proc_time_step(
     encoding = {var: compression for var in ds.data_vars}
 
     if case == "init":
-        fname = f"FMGenCast-initial-geos_date-{tstamp}_res-1.0_levels-13.nc"
+        fname = f"FMGraphCast-initial-era5_date-{tstamp}_res-0.25_levels-13.nc"
     else:
         suffix = ".nc"
         fname = \
-            "FMGenCast-prediction-geos_date-" + \
-            f"{tstamp}_res-1.0_levels-13{suffix}"
+            "FMGraphCast-prediction-era5_date-" + \
+            f"{tstamp}_res-0.25_levels-13{suffix}"
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -198,7 +198,6 @@ def run_postprocess_day(
                 pred_dir: str,
                 post_out_dir: str,
                 date: str,
-                ens_mean: bool = True
             ) -> None:
     """
     Process one day's init (from GEOS) and
@@ -235,7 +234,7 @@ def run_postprocess_day(
             proc_time_step(
                 ds_init, ctime, ref_init,
                 output_dir=out_day,
-                case="init", ens_mean=ens_mean
+                case="init",
             )
     else:
         logging.warning(
@@ -256,7 +255,6 @@ def run_postprocess_day(
             proc_time_step(
                 ds_pred, ctime, ref_pred,
                 output_dir=out_day, case="pred",
-                ens_mean=ens_mean
             )
     else:
         logging.warning(
@@ -271,7 +269,6 @@ def run_postprocess_multiday(
     geos_dir: str,
     pred_dir: str,
     post_out_dir: str,
-    ens_mean: bool = True,
 ):
     """
     Postprocess multiple days (inclusive) of
@@ -301,7 +298,6 @@ def run_postprocess_multiday(
             pred_dir=pred_dir,
             post_out_dir=post_out_dir,
             date=current_date,
-            ens_mean=ens_mean,
         )
         logging.info("Done postprocessing.")
         logging.info("======================================================")
@@ -316,7 +312,7 @@ if __name__ == "__main__":
     )
 
     parser = argparse.ArgumentParser(
-        description="Convert GenCast outputs to CF-compliant NetCDFs")
+        description="Convert GraphCast outputs to CF-compliant NetCDFs")
     parser.add_argument(
         "--start_date", type=str, required=True,
         help="Start date (YYYY-MM-DD:HH)")
@@ -327,13 +323,10 @@ if __name__ == "__main__":
         "--geos_dir", type=str, required=True,
         help="Directory with GEOS inputs (for initial conditions)")
     parser.add_argument("--pred_dir",   type=str, required=True,
-                        help="Directory with GenCast predictions")
+                        help="Directory with GraphCast predictions")
     parser.add_argument(
         "--post_out_dir", type=str, default="./output/postprocess",
         help="Directory for CF-compliant NetCDF outputs")
-    parser.add_argument(
-        "--no_ens_mean", action="store_true",
-        help="Disable ensemble mean (keep all ensemble members)")
 
     args = parser.parse_args()
 
@@ -343,5 +336,4 @@ if __name__ == "__main__":
         geos_dir=args.geos_dir,
         pred_dir=args.pred_dir,
         post_out_dir=args.post_out_dir,
-        ens_mean=not args.no_ens_mean,
     )

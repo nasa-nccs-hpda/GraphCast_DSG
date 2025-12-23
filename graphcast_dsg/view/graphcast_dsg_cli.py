@@ -88,9 +88,6 @@ def main():
     post_args.add_argument(
         "--output_dir", type=str, default="./output/3-postprocess",
         help="Directory for CF-compliant NetCDF outputs")
-    post_args.add_argument(
-        "--ens_mean", type=bool, default=True,
-        help="Disable ensemble mean (keep all ensemble members)")
 
     # ---------- run (all-in-one) ----------
     run_args = sub.add_parser(
@@ -177,7 +174,6 @@ def main():
             geos_dir=args.input_dir,
             pred_dir=args.predictions_dir,
             post_out_dir=args.output_dir,
-            ens_mean=args.ens_mean,
         )
 
     elif args.cmd == "run":
