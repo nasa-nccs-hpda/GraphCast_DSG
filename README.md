@@ -14,7 +14,7 @@ Follow the steps below to set up and run. The workflow currently only works on D
 
 The workflow runs preprocessing, prediction, and postprocessing for a given date
 range using the Discover systems. Due to the system configuration, you will need access 
-to a datamove node for preprocessing, which retrieving EAR5 data from Google Storge public dataset, 
+to a datamove node for preprocessing, which retrieving ERA5 data from Google Storage public dataset, 
 and a single GPU A100 to run prediction and postprocessing.
 
 Note that the following command can be run from any Discover login node.
@@ -22,11 +22,13 @@ Note that the following command can be run from any Discover login node.
 For a single day (end_date defaults to the same day):
 
 Step-1: preprocessing
+
 ```bash
 sbatch --partition=datamove --mem=200G -t 1:00:00 -J preprocess-gc --wrap="module load singularity; singularity exec -B $NOBACKUP,/css,/gpfsm/dmd/css,/nfs3m,/gpfsm /discover/nobackup/projects/QEFM/containers/graphcast-dsg-containers/graphcast-dsg-latest graphcast-dsg preprocess --start_date 2025-12-19:12 --output_dir /discover/nobackup/jli30/development/GraphCast_DSG/tests/graphcast-run"
 ```
 
 Step-2: prediction & postprocessing
+
 ```bash
 sbatch --partition=gpu_a100 --constraint=rome --ntasks=10 --gres=gpu:1 --mem-per-gpu=100G -t 1:00:00 -J graphcast --wrap="module load singularity; singularity exec --nv -B $NOBACKUP,/css,/gpfsm/dmd/css,/nfs3m,/gpfsm /discover/nobackup/projects/QEFM/containers/graphcast-dsg-containers/graphcast-dsg-latest graphcast-dsg run --start_date 2025-12-19:12 --output_dir /discover/nobackup/jli30/development/GraphCast_DSG/tests/graphcast-run"
 ```
